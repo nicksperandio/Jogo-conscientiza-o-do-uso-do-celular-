@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Missão: Eu Sou o Chefe do Celular!</title>
+  <style>
+    :root {
+      --azul: #2477d4;
+      --azul-escuro: #174e8f;
+      --verde: #49a96f;
+      --amarelo: #f5c842;
+      --laranja: #ef8c36;
+      --vermelho: #df4e4e;
+      --roxo: #7e5ac7;
+      --fundo: #f4f8fc;
+      --cartao: #ffffff;
+      --texto: #253247;
+      --borda: #d8e3ef;
+      --sombra: 0 12px 30px rgba(31, 72, 117, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eaf5ff 0%, var(--fundo) 100%);
+      color: var(--texto);
+      min-height: 100vh;
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: white;
+      box-shadow: var(--sombra);
+      font-size: 30px;
+    }
+
+    h1, h2, h3 { margin-top: 0; }
+    h1 { font-size: clamp(1.45rem, 3vw, 2.2rem); margin-bottom: 4px; }
+    h2 { font-size: clamp(1.35rem, 2.4vw, 1.85rem); }
+
+    .subtitulo { color: #607087; margin: 0; }
+
+    .status {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      background: white;
+      border: 1px solid var(--borda);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-weight: bold;
+      box-shadow: 0 6px 14px rgba(30, 70, 110, .07);
+    }
+
+    .progresso {
+      height: 12px;
+      background: #dfeaf4;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progresso > div {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--azul), var(--verde));
+      transition: width .35s ease;
+    }
+
+    .tela {
+      display: none;
+      background: var(--cartao);
+      border: 1px solid var(--borda);
+      border-radius: 24px;
+      padding: clamp(18px, 4vw, 34px);
+      box-shadow: var(--sombra);
+      animation: aparecer .3s ease;
+    }
+
+    .tela.ativa { display: block; }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fala {
+      background: #eef7ff;
+      border-left: 6px solid var(--azul);
+      padding: 16px 18px;
+      border-radius: 12px;
+      margin: 16px 0;
+      font-size: 1.08rem;
+      line-height: 1.5;
+    }
+
+    .campo {
+      display: grid;
+      gap: 7px;
+      margin: 14px 0;
+    }
+
+    label { font-weight: bold; }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      border: 2px solid var(--borda);
+      border-radius: 13px;
+      padding: 12px 14px;
+      background: white;
+      color: var(--texto);
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus { border-color: var(--azul); }
+    textarea { min-height: 90px; resize: vertical; }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .opcao {
+      border: 2px solid var(--borda);
+      border-radius: 16px;
+      padding: 15px;
+      background: #fff;
+      transition: .2s ease;
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .opcao:hover { transform: translateY(-2px); border-color: #9dc4ee; }
+    .opcao.selecionada { border-color: var(--azul); background: #edf6ff; box-shadow: 0 0 0 3px rgba(36,119,212,.12); }
+
+    .acoes {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 13px;
+      padding: 12px 18px;
+      font-weight: bold;
+      min-height: 46px;
+    }
+
+    .btn-primario { background: var(--azul); color: white; }
+    .btn-secundario { background: #e9f0f7; color: var(--texto); }
+    .btn-verde { background: var(--verde); color: white; }
+    .btn-perigo { background: #ffe8e8; color: #9f2828; }
+    .btn:hover { filter: brightness(.98); transform: translateY(-1px); }
+
+    .termometro-wrap {
+      background: #f7fafc;
+      border: 1px solid var(--borda);
+      border-radius: 20px;
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .escala {
+      display: grid;
+      grid-template-columns: repeat(11, 1fr);
+      gap: 3px;
+      margin: 10px 0 6px;
+    }
+
+    .nivel {
+      border-radius: 8px;
+      text-align: center;
+      padding: 10px 2px;
+      font-weight: bold;
+      color: #17314d;
+    }
+
+    .n0,.n1,.n2,.n3 { background: #a9dfb8; }
+    .n4,.n5,.n6 { background: #ffe48a; }
+    .n7,.n8 { background: #ffc17d; }
+    .n9,.n10 { background: #ff9797; }
+
+    input[type="range"] { width: 100%; accent-color: var(--azul); }
+
+    .nivel-destaque {
+      display: inline-grid;
+      place-items: center;
+      min-width: 90px;
+      min-height: 70px;
+      border-radius: 18px;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      background: var(--azul);
+      margin: 8px 0;
+    }
+
+    .corpo {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .boneco {
+      min-height: 460px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #f2f8ff, #f7f5ff);
+      border: 1px solid var(--borda);
+      position: sticky;
+      top: 15px;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .boneco-emoji { font-size: 9rem; line-height: 1; }
+
+    .parte {
+      border: 1px solid var(--borda);
+      background: #fff;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 13px;
+    }
+
+    .parte h3 { margin-bottom: 10px; }
+
+    .emocao {
+      font-size: 1.05rem;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .emocao span:first-child { font-size: 2rem; }
+
+    .cadeia {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(150px, 1fr));
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .passo {
+      border: 2px dashed #b9cce0;
+      border-radius: 16px;
+      padding: 12px;
+      background: #f9fbfd;
+      min-width: 150px;
+    }
+
+    .passo strong { display: block; color: var(--azul-escuro); margin-bottom: 7px; }
+    .passo textarea { min-height: 115px; }
+
+    .seta { text-align: center; font-size: 1.6rem; color: var(--azul); margin: 7px 0; }
+
+    .mochila {
+      border: 3px dashed var(--verde);
+      background: #f0fff5;
+      border-radius: 24px;
+      padding: 18px;
+      min-height: 150px;
+      margin-top: 16px;
+    }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 9px; }
+    .tag { background: white; border: 1px solid #b7dfc4; border-radius: 999px; padding: 9px 12px; font-weight: bold; }
+
+    .resultado {
+      background: linear-gradient(135deg, #edf7ff, #f1fff6);
+      border: 1px solid #cfe0ee;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 14px 0;
+    }
+
+    .medalhas { display: flex; gap: 10px; flex-wrap: wrap; }
+    .medalha { background: #fff7d4; border: 1px solid #efd36a; border-radius: 999px; padding: 9px 13px; font-weight: bold; }
+
+    .aviso { color: #65758b; font-size: .92rem; }
+    .oculto { display: none !important; }
+
+    @media (max-width: 820px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .corpo { grid-template-columns: 1fr; }
+      .boneco { position: static; min-height: 240px; }
+      .boneco-emoji { font-size: 7rem; }
+      .escala { grid-template-columns: repeat(6, 1fr); }
+    }
+
+    @media print {
+      body { background: white; }
+      .topo, .progresso, .acoes, .nao-imprimir { display: none !important; }
+      .app { width: 100%; padding: 0; }
+      .tela { display: none !important; box-shadow: none; border: none; }
+      #tela-final { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topo">
+      <div class="marca">
+        <div class="logo">📱🧠</div>
+        <div>
+          <h1>Missão: Eu Sou o Chefe do Celular!</h1>
+          <p class="subtitulo">Um jogo para investigar pensamentos, emoções, corpo e escolhas.</p>
+        </div>
+      </div>
+      <div class="status">
+        <div class="pill">⭐ Pontos: <span id="pontos">0</span></div>
+        <div class="pill">🎯 Missão <span id="missaoAtual">1</span>/9</div>
+      </div>
+    </header>
+
+    <div class="progresso"><div id="barraProgresso"></div></div>
+
+    <section class="tela ativa" id="tela-1">
+      <h2>Bem-vindo à investigação! 🔎</h2>
+      <div class="fala">
+        “Hoje eu quero descobrir uma coisa muito importante junto com você. Será que é você quem controla o celular… ou será que, às vezes, o celular controla você?”
+      </div>
+      <p>Não existe resposta certa ou errada. Vamos investigar juntos.</p>
+
+      <div class="campo">
+        <label for="nome">Qual é o seu nome?</label>
+        <input type="text" id="nome" placeholder="Digite o nome da criança" />
+      </div>
+
+      <div class="campo">
+        <label>Escolha seu avatar:</label>
+        <div class="grid grid-3" data-grupo="avatar">
+          <button class="opcao" data-valor="🦸">🦸 Super-herói</button>
+          <button class="opcao" data-valor="🕵️">🕵️ Detetive</button>
+          <button class="opcao" data-valor="🧙">🧙 Guardião</button>
+        </div>
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-perigo" onclick="reiniciarJogo()">Limpar progresso</button>
+        <button class="btn btn-primario" onclick="proximaTela(1)">Começar missão</button>
+      </div>
+    </section>
+
+    <section class="tela" id="tela-2">
+      <h2>Missão 1 — Quem está no controle?</h2>
+      <p>Leia cada situação e escolha a resposta que mais combina.</p>
+
+      <div class="parte">
+        <h3>1. Você está brincando com alguém e nem lembra do celular.</h3>
+        <div class="grid grid-3" data-grupo="controle1">
+          <button class="opcao" data-valor="eu">🙋 Eu estou no controle</button>
+          <button class="opcao" data-valor="celular">📱 O celular está no controle</button>
+          <button class="opcao" data-valor="naosei">🤔 Ainda não sei</button>
+        </div>
+      </div>
+
+      <div class="parte">
+        <h3>2. Alguém pede para desligar e você começa a gritar ou tenta esconder o aparelho.</h3>
+        <div class="grid grid-3" data-grupo="controle2">
+          <button class="opcao" data-valor="eu">🙋 Eu estou no controle</button>
+          <button class="opcao" data-valor="celular">📱 A vontade ficou muito forte</button>
+          <button class="opcao" data-valor="naosei">🤔 Ainda não sei</button>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="reflexaoControle">O que você percebeu?</label>
+        <textarea id="reflexaoControle" placeholder="Escreva ou registre a resposta da criança"></textarea>
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-secundario" onclick="voltarTela(2)">Voltar</button>
+        <button class="btn btn-primario" onclick="proximaTela(2)">Continuar</button>
+      </div>
+    </section>
+
+    <section class="tela" id="tela-3">
+      <h2>Missão 2 — Termômetro do Celular 🌡️</h2>
+      <p>Escolha quanto a vontade de usar o celular está grande.</p>
+
+      <div class="termometro-wrap">
+        <div class="escala">
+          <div class="nivel n0">0</div><div class="nivel n1">1</div><div class="nivel n2">2</div>
+          <div class="nivel n3">3</div><div class="nivel n4">4</div><div class="nivel n5">5</div>
+          <div class="nivel n6">6</div><div class="nivel n7">7</div><div class="nivel n8">8</div>
+          <div class="nivel n9">9</div><div class="nivel n10">10</div>
+        </div>
+        <input type="range" min="0" max="10" value="5" id="termometro" oninput="atualizarTermometro()" />
+        <div class="nivel-destaque" id="valorTermometro">5</div>
+        <p id="descricaoNivel"><strong>Nível 5:</strong> você começa a pensar mais no celular.</p>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="campo">
+          <label for="oQueAcontece">O que normalmente está acontecendo?</label>
+          <textarea id="oQueAcontece" placeholder="Ex.: estou entediado, terminei uma tarefa..."></textarea>
+        </div>
+        <div class="campo">
+          <label for="pensamentoNivel">O que passa na sua cabeça?</label>
+          <textarea id="pensamentoNivel" placeholder="Ex.: quero pegar agora..."></textarea>
+        </div>
+        <div class="campo">
+          <label for="sentimentoNivel">O que você sente?</label>
+          <textarea id="sentimentoNivel" placeholder="Ex.: ansiedade, raiva, tédio..."></textarea>
+        </div>
+        <div class="campo">
+          <label for="acaoNivel">O que você costuma fazer?</label>
+          <textarea id="acaoNivel" placeholder="Ex.: peço várias vezes, espero, reclamo..."></textarea>
+        </div>
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-secundario" onclick="voltarTela(3)">Voltar</button>
+        <button class="btn btn-primario" onclick="proximaTela(3)">Continuar</button>
+      </div>
+    </section>
+
+    <section class="tela" id="tela-4">
+      <h2>Missão 3 — Detetive do Corpo 🕵️</h2>
+      <p>O corpo pode dar pistas antes da vontade ficar muito forte. Marque o que acontece com você.</p>
+
+      <div class="corpo">
+        <div class="boneco">
+          <div>
+            <div class="boneco-emoji">🧍</div>
+            <strong>Meu corpo fala</strong>
+            <p class="aviso">Observe cada parte e escolha as pistas.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="parte">
+            <h3>🧠 Cabeça — O que você pensa?</h3>
+            <div class="grid grid-2" data-grupo="cabeca" data-multi="true">
+              <button class="opcao" data-valor="Quero logo">Quero logo</button>
+              <button class="opcao" data-valor="Só mais cinco minutos">Só mais cinco minutos</button>
+              <button class="opcao" data-valor="É injusto">É injusto</button>
+              <button class="opcao" data-valor="Vai demorar muito">Vai demorar muito</button>
+            </div>
+          </div>
+
+          <div class="parte">
+            <h3>👀 Olhos</h3>
+            <div class="grid grid-2" data-grupo="olhos" data-multi="true">
+              <button class="opcao" data-valor="Procuram o celular">Procuram o celular</button>
+              <button class="opcao" data-valor="Olham para onde ele está">Olham para onde ele está</button>
+              <button class="opcao" data-valor="Ficam apertados">Ficam apertados</button>
+              <button class="opcao" data-valor="Não percebo mudança">Não percebo mudança</button>
+            </div>
+          </div>
+
+          <div class="parte">
+            <h3>👄 Boca</h3>
+            <div class="grid grid-2" data-grupo="boca" data-multi="true">
+              <button class="opcao" data-valor="Falo mais alto">Falo mais alto</button>
+              <button class="opcao" data-valor="Reclamo">Reclamo</button>
+              <button class="opcao" data-valor="Peço várias vezes">Peço várias vezes</button>
+              <button class="opcao" data-valor="Fico quieto">Fico quieto</button>
+            </div>
+          </div>
+
+          <div class="parte">
+            <h3>🫄 Barriga e ❤️ coração</h3>
+            <div class="grid grid-2" data-grupo="barrigaCoracao" data-multi="true">
+              <button class="opcao" data-valor="Frio na barriga">Frio na barriga</button>
+              <button class="opcao" data-valor="Aperto ou nervosismo">Aperto ou nervosismo</button>
+              <button class="opcao" data-valor="Coração bate mais rápido">Coração bate mais rápido</button>
+              <button class="opcao" data-valor="Parece normal">Parece normal</button>
+            </div>
+          </div>
+
+          <div class="parte">
+            <h3>✋ Mãos</h3>
+            <div class="grid grid-2" data-grupo="maos" data-multi="true">
+              <button class="opcao" data-valor="Querem pegar o celular">Querem pegar o celular</button>
+              <button class="opcao" data-valor="Ficam agitadas">Ficam agitadas</button>
+              <button class="opcao" data-valor="Ficam fechadas">Ficam fechadas</button>
+              <button class="opcao" data-valor="Conseguem esperar">Conseguem esperar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-secundario" onclick="voltarTela(4)">Voltar</button>
+        <button class="btn btn-primario" onclick="proximaTela(4)">Continuar</button>
+      </div>
+    </section>
+
+    <section class="tela" id="tela-5">
+      <h2>Missão 4 — Caçador de Pensamentos 🧠</h2>
+      <p>Marque os pensamentos que já apareceram e crie respostas mais úteis.</p>
+
+      <div class="grid grid-2" data-grupo="pensamentos" data-multi="true">
+        <button class="opcao" data-valor="Eu preciso do celular agora">Eu preciso do celular AGORA.</button>
+        <button class="opcao" data-valor="Não vou aguentar">Não vou aguentar.</button>
+        <button class="opcao" data-valor="Vai demorar muito">Vai demorar muito.</button>
+        <button class="opcao" data-valor="Não é justo">Não é justo.</button>
+        <button class="opcao" data-valor="É muito chato">É muito chato.</button>
+      </div>
+
+      <div class="fala">“Será que esses pensamentos são sempre verdadeiros ou apenas parecem verdadeiros quando a vontade está muito forte?”</div>
+
+      <div class="campo">
+        <label for="pensamentoUtil">Escreva um pensamento mais útil:</label>
+        <textarea id="pensamentoUtil" placeholder="Ex.: Estou com muita vontade, mas consigo esperar e pedir ajuda."></textarea>
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-secundario" onclick="voltarTela(5)">Voltar</button>
+        <button class="btn btn-primario" onclick="proximaTela(5)">Continuar</button>
+      </div>
+    </section>
+
+    <section class="tela" id="tela-6">
+      <h2>Missão 5 — Escada das Emoções 😊😡😰</h2>
+      <p>Selecione as emoções que aparecem quando a vontade de usar o celular aumenta.</p>
+
+      <div class="grid grid-3" data-grupo="emocoes" data-multi="true">
+        <button class="opcao emocao" data-valor="Feliz"><span>😊</span><span>Feliz</span></button>
+        <button class="opcao emocao" data-valor="Tranquilo"><span>😌</span><span>Tranquilo</span></button>
+        <button class="opcao emocao" data-valor="Entediado"><span>😐</span><span>Entediado</span></button>
+        <button class="opcao emocao" data-valor="Triste"><span>😔</span><span>Triste</span></button>
+        <button class="opcao emocao" data-valor="Bravo"><span>😡</span><span>Bravo</span></button>
+        <button class="opcao emocao" data-valor="Frustrado"><span>😣</span><span>Frustrado</span></button>
+        <button class="opcao emocao" data-valor="Ansioso"><span>😰</span><span>Ansioso</span></button>
+      </div>
+
+      <div class="campo">
+        <label for="emocaoForte">Qual emoção costuma aparecer com mais força?</label>
+        <input id="emocaoForte" type="text" placeholder="Escreva aqui" />
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-secundario" onclick="voltarTela(6)">Voltar</button>
+        <button class="btn btn-primario" onclick="proximaTela(6)">Continuar</button>
+      </div>
+    </section>
+
+    <section class="tela" id="tela-7">
+      <h2>Missão 6 — Monte a Cadeia 🔗</h2>
+      <p>Registre o que acontece antes, durante e depois.</p>
+
+      <h3>Cadeia atual</h3>
+      <div class="cadeia">
+        <div class="passo"><strong>Situação</strong><textarea id="cadeiaSituacao" placeholder="O que aconteceu?"></textarea></div>
+        <div class="passo"><strong>Pensamento</strong><textarea id="cadeiaPensamento" placeholder="O que passou na cabeça?"></textarea></div>
+        <div class="passo"><strong>Emoção</strong><textarea id="cadeiaEmocao" placeholder="O que sentiu?"></textarea></div>
+        <div class="passo"><strong>Corpo</strong><textarea id="cadeiaCorpo" placeholder="O que aconteceu no corpo?"></textarea></div>
+        <div class="passo"><strong>Comportamento</strong><textarea id="cadeiaComportamento" placeholder="O que fez?"></textarea></div>
+        <div class="passo"><strong>Consequência</strong><textarea id="cadeiaConsequencia" placeholder="O que aconteceu depois?"></textarea></div>
+      </div>
+
+      <div class="seta">⬇️ Como podemos mudar essa história? ⬇️</div>
+
+      <h3>Nova cadeia</h3>
+      <div class="cadeia">
+        <div class="passo"><strong>Situação</strong><textarea id="novaSituacao" placeholder="A situação pode ser a mesma."></textarea></div>
+        <div class="passo"><strong>Pensamento útil</strong><textarea id="novaPensamento" placeholder="O que posso pensar?"></textarea></div>
+        <div class="passo"><strong>Emoção</strong><textarea id="novaEmocao" placeholder="O que posso sentir?"></textarea></div>
+        <div class="passo"><strong>Corpo</strong><textarea id="novaCorpo" placeholder="Como posso perceber meu corpo?"></textarea></div>
+        <div class="passo"><strong>Nova atitude</strong><textarea id="novaAtitude" placeholder="O que posso fazer?"></textarea></div>
+        <div class="passo"><strong>Nova consequência</strong><textarea id="novaConsequencia" placeholder="O que pode acontecer depois?"></textarea></div>
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-secundario" onclick="voltarTela(7)">Voltar</button>
+        <button class="btn btn-primario" onclick="proximaTela(7)">Continuar</button>
+      </div>
+    </section>
+
+    <section class="tela" id="tela-8">
+      <h2>Missão 7 — O Superpoder do Controle 🦸</h2>
+      <div class="grid grid-2">
+        <div class="parte" style="border-color:#f0b1b1;background:#fff7f7">
+          <h3>📱 A vontade diz:</h3>
+          <p style="font-size:1.35rem"><strong>“Quero agora!”</strong></p>
+        </div>
+        <div class="parte" style="border-color:#a8d8b7;background:#f4fff7">
+          <h3>🧠 O controle pode responder:</h3>
+          <div class="grid" data-grupo="respostaControle">
+            <button class="opcao" data-valor="Eu consigo esperar">Eu consigo esperar.</button>
+            <button class="opcao" data-valor="Posso perguntar quando será minha vez">Posso perguntar quando será minha vez.</button>
+            <button class="opcao" data-valor="Vou escolher outra coisa para fazer">Vou escolher outra coisa para fazer.</button>
+            <button class="opcao" data-valor="Preciso de ajuda">Preciso de ajuda porque está muito difícil.</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fala">A vontade pode existir. Você não precisa obedecer a ela imediatamente.</div>
+
+      <div class="acoes">
+        <button class="btn btn-secundario" onclick="voltarTela(8)">Voltar</button>
+        <button class="btn btn-primario" onclick="proximaTela(8)">Continuar</button>
+      </div>
+    </section>
+
+    <section class="tela" id="tela-9">
+      <h2>Missão 8 — Mochila de Estratégias 🎒</h2>
+      <p>Escolha estratégias que podem ajudar quando a vontade estiver no nível 7 ou mais.</p>
+
+      <div class="grid grid-3" data-grupo="estrategias" data-multi="true">
+        <button class="opcao" data-valor="Respirar">🌬️ Respirar</button>
+        <button class="opcao" data-valor="Beber água">💧 Beber água</button>
+        <button class="opcao" data-valor="Conversar">🗣️ Conversar</button>
+        <button class="opcao" data-valor="Brincar">🧸 Brincar</button>
+        <button class="opcao" data-valor="Jogar bola">⚽ Jogar bola</button>
+        <button class="opcao" data-valor="Desenhar">🎨 Desenhar</button>
+        <button class="opcao" data-valor="Lego">🧱 Lego</button>
+        <button class="opcao" data-valor="Passear">🚶 Passear</button>
+        <button class="opcao" data-valor="Ouvir música">🎵 Ouvir música</button>
+        <button class="opcao" data-valor="Ler">📚 Ler</button>
+        <button class="opcao" data-valor="Pedir ajuda">🤝 Pedir ajuda</button>
+        <button class="opcao" data-valor="Usar temporizador">⏳ Usar temporizador</button>
+      </div>
+
+      <div class="campo">
+        <label for="outraEstrategia">Outra estratégia:</label>
+        <input id="outraEstrategia" type="text" placeholder="Escreva uma estratégia diferente" />
+      </div>
+
+      <div class="mochila">
+        <h3>Minha mochila de estratégias</h3>
+        <div class="tags" id="mochilaTags"><span class="aviso">As estratégias escolhidas aparecerão aqui.</span></div>
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-secundario" onclick="voltarTela(9)">Voltar</button>
+        <button class="btn btn-verde" onclick="proximaTela(9)">Concluir missão</button>
+      </div>
+    </section>
+
+    <section class="tela" id="tela-final">
+      <h2>Missão 9 — Eu Sou o Chefe! 👑</h2>
+      <div class="fala" id="mensagemFinal"></div>
+
+      <div class="resultado">
+        <h3>Meu Plano de Controle</h3>
+        <p><strong>Nome:</strong> <span id="resNome"></span></p>
+        <p><strong>Meu nível de vontade observado:</strong> <span id="resNivel"></span></p>
+        <p><strong>Emoções que aparecem:</strong> <span id="resEmocoes"></span></p>
+        <p><strong>Pistas do meu corpo:</strong> <span id="resCorpo"></span></p>
+        <p><strong>Pensamento mais útil:</strong> <span id="resPensamentoUtil"></span></p>
+        <p><strong>Quando eu estiver no nível 7 ou mais, posso:</strong> <span id="resEstrategias"></span></p>
+      </div>
+
+      <div class="resultado">
+        <h3>Missão da Semana</h3>
+        <p>Toda vez que eu perceber que estou no nível 7 ou mais, posso perguntar:</p>
+        <p>✅ O que estou sentindo?</p>
+        <p>✅ Meu corpo avisou?</p>
+        <p>✅ Preciso mesmo do celular agora?</p>
+        <p>✅ Existe outra coisa que posso fazer?</p>
+      </div>
+
+      <div class="resultado">
+        <h3>Medalhas conquistadas</h3>
+        <div class="medalhas">
+          <span class="medalha">🔎 Detetive do Corpo</span>
+          <span class="medalha">🧠 Caçador de Pensamentos</span>
+          <span class="medalha">⏳ Campeão da Espera</span>
+          <span class="medalha">👑 Chefe das Escolhas</span>
+        </div>
+      </div>
+
+      <div class="fala">
+        “Você não é o seu celular. Você também não é a sua vontade. Você pode aprender a escolher. O objetivo não é parar de usar o celular, mas fazer escolhas mais equilibradas.”
+      </div>
+
+      <div class="acoes nao-imprimir">
+        <button class="btn btn-secundario" onclick="voltarTelaFinal()">Revisar respostas</button>
+        <button class="btn btn-primario" onclick="window.print()">Imprimir plano</button>
+        <button class="btn btn-verde" onclick="salvarArquivoTexto()">Salvar resumo</button>
+        <button class="btn btn-perigo" onclick="reiniciarJogo()">Nova atividade</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const dados = {
+      tela: 1,
+      nome: '',
+      avatar: '🕵️',
+      pontos: 0,
+      respostas: {}
+    };
+
+    const totalTelas = 10;
+
+    document.querySelectorAll('[data-grupo]').forEach(grupo => {
+      grupo.addEventListener('click', evento => {
+        const botao = evento.target.closest('.opcao');
+        if (!botao) return;
+
+        const multi = grupo.dataset.multi === 'true';
+        if (multi) {
+          botao.classList.toggle('selecionada');
+        } else {
+          grupo.querySelectorAll('.opcao').forEach(item => item.classList.remove('selecionada'));
+          botao.classList.add('selecionada');
+        }
+
+        atualizarMochila();
+        salvarLocal();
+      });
+    });
+
+    document.querySelectorAll('input, textarea, select').forEach(el => {
+      el.addEventListener('input', salvarLocal);
+    });
+
+    function selecionados(grupo) {
+      return [...document.querySelectorAll(`[data-grupo="${grupo}"] .opcao.selecionada`)]
+        .map(b => b.dataset.valor);
+    }
+
+    function valorSelecionado(grupo) {
+      const item = document.querySelector(`[data-grupo="${grupo}"] .opcao.selecionada`);
+      return item ? item.dataset.valor : '';
+    }
+
+    function proximaTela(atual) {
+      coletarDados();
+      dados.pontos = Math.max(dados.pontos, atual * 3);
+      mostrarTela(atual + 1);
+      if (atual === 9) preencherResumo();
+      salvarLocal();
+    }
+
+    function voltarTela(atual) {
+      coletarDados();
+      mostrarTela(atual - 1);
+    }
+
+    function voltarTelaFinal() {
+      mostrarTela(9);
+    }
+
+    function mostrarTela(numero) {
+      document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+      const id = numero >= 10 ? 'tela-final' : `tela-${numero}`;
+      document.getElementById(id).classList.add('ativa');
+      dados.tela = numero;
+      document.getElementById('missaoAtual').textContent = Math.min(9, Math.max(1, numero - 1 || 1));
+      document.getElementById('pontos').textContent = dados.pontos;
+      document.getElementById('barraProgresso').style.width = `${Math.min(100, ((numero - 1) / 9) * 100)}%`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function atualizarTermometro() {
+      const valor = Number(document.getElementById('termometro').value);
+      const caixa = document.getElementById('valorTermometro');
+      const descricao = document.getElementById('descricaoNivel');
+      caixa.textContent = valor;
+
+      let cor = '#49a96f';
+      let texto = 'A vontade está pequena e é mais fácil escolher.';
+      if (valor >= 4 && valor <= 6) { cor = '#d5aa19'; texto = 'A vontade está aumentando e o celular começa a aparecer nos pensamentos.'; }
+      if (valor >= 7 && valor <= 8) { cor = '#ef8c36'; texto = 'A vontade está muito grande. É uma boa hora para usar uma estratégia.'; }
+      if (valor >= 9) { cor = '#df4e4e'; texto = 'Está difícil controlar sozinho. Pedir ajuda pode ser uma ótima escolha.'; }
+      caixa.style.background = cor;
+      descricao.innerHTML = `<strong>Nível ${valor}:</strong> ${texto}`;
+      salvarLocal();
+    }
+
+    function atualizarMochila() {
+      const itens = selecionados('estrategias');
+      const outra = document.getElementById('outraEstrategia')?.value.trim();
+      const area = document.getElementById('mochilaTags');
+      if (!area) return;
+      const lista = [...itens];
+      if (outra) lista.push(outra);
+      area.innerHTML = lista.length
+        ? lista.map(item => `<span class="tag">${escapar(item)}</span>`).join('')
+        : '<span class="aviso">As estratégias escolhidas aparecerão aqui.</span>';
+    }
+
+    function coletarDados() {
+      dados.nome = document.getElementById('nome').value.trim() || 'Participante';
+      dados.avatar = valorSelecionado('avatar') || '🕵️';
+      dados.respostas = {
+        controle1: valorSelecionado('controle1'),
+        controle2: valorSelecionado('controle2'),
+        reflexaoControle: document.getElementById('reflexaoControle').value,
+        nivel: document.getElementById('termometro').value,
+        oQueAcontece: document.getElementById('oQueAcontece').value,
+        pensamentoNivel: document.getElementById('pensamentoNivel').value,
+        sentimentoNivel: document.getElementById('sentimentoNivel').value,
+        acaoNivel: document.getElementById('acaoNivel').value,
+        cabeca: selecionados('cabeca'),
+        olhos: selecionados('olhos'),
+        boca: selecionados('boca'),
+        barrigaCoracao: selecionados('barrigaCoracao'),
+        maos: selecionados('maos'),
+        pensamentos: selecionados('pensamentos'),
+        pensamentoUtil: document.getElementById('pensamentoUtil').value,
+        emocoes: selecionados('emocoes'),
+        emocaoForte: document.getElementById('emocaoForte').value,
+        respostaControle: valorSelecionado('respostaControle'),
+        estrategias: selecionados('estrategias'),
+        outraEstrategia: document.getElementById('outraEstrategia').value,
+        cadeia: {
+          situacao: document.getElementById('cadeiaSituacao').value,
+          pensamento: document.getElementById('cadeiaPensamento').value,
+          emocao: document.getElementById('cadeiaEmocao').value,
+          corpo: document.getElementById('cadeiaCorpo').value,
+          comportamento: document.getElementById('cadeiaComportamento').value,
+          consequencia: document.getElementById('cadeiaConsequencia').value
+        },
+        novaCadeia: {
+          situacao: document.getElementById('novaSituacao').value,
+          pensamento: document.getElementById('novaPensamento').value,
+          emocao: document.getElementById('novaEmocao').value,
+          corpo: document.getElementById('novaCorpo').value,
+          atitude: document.getElementById('novaAtitude').value,
+          consequencia: document.getElementById('novaConsequencia').value
+        }
+      };
+    }
+
+    function preencherResumo() {
+      coletarDados();
+      const r = dados.respostas;
+      const pistas = [...r.cabeca, ...r.olhos, ...r.boca, ...r.barrigaCoracao, ...r.maos];
+      const estrategias = [...r.estrategias];
+      if (r.outraEstrategia.trim()) estrategias.push(r.outraEstrategia.trim());
+
+      document.getElementById('mensagemFinal').innerHTML = `${dados.avatar} <strong>${escapar(dados.nome)}</strong>, você concluiu a investigação e conquistou <strong>${dados.pontos}</strong> pontos de consciência e controle!`;
+      document.getElementById('resNome').textContent = dados.nome;
+      document.getElementById('resNivel').textContent = r.nivel;
+      document.getElementById('resEmocoes').textContent = r.emocoes.length ? r.emocoes.join(', ') : 'Ainda não registrado';
+      document.getElementById('resCorpo').textContent = pistas.length ? pistas.join(', ') : 'Ainda não registrado';
+      document.getElementById('resPensamentoUtil').textContent = r.pensamentoUtil || r.respostaControle || 'Ainda não registrado';
+      document.getElementById('resEstrategias').textContent = estrategias.length ? estrategias.join(', ') : 'Ainda não registrado';
+      salvarLocal();
+    }
+
+    function salvarLocal() {
+      try {
+        coletarDados();
+        localStorage.setItem('missaoChefeCelular', JSON.stringify(dados));
+      } catch (e) {
+        console.warn('Não foi possível salvar localmente.', e);
+      }
+    }
+
+    function carregarLocal() {
+      try {
+        const salvo = JSON.parse(localStorage.getItem('missaoChefeCelular'));
+        if (!salvo) return;
+        Object.assign(dados, salvo);
+        preencherCampos(salvo);
+        mostrarTela(salvo.tela || 1);
+        atualizarTermometro();
+        atualizarMochila();
+        if ((salvo.tela || 1) >= 10) preencherResumo();
+      } catch (e) {
+        console.warn('Não foi possível carregar o progresso.', e);
+      }
+    }
+
+    function preencherCampos(salvo) {
+      const r = salvo.respostas || {};
+      setValor('nome', salvo.nome === 'Participante' ? '' : salvo.nome);
+      marcarGrupo('avatar', [salvo.avatar]);
+      marcarGrupo('controle1', [r.controle1]);
+      marcarGrupo('controle2', [r.controle2]);
+      setValor('reflexaoControle', r.reflexaoControle);
+      setValor('termometro', r.nivel || 5);
+      setValor('oQueAcontece', r.oQueAcontece);
+      setValor('pensamentoNivel', r.pensamentoNivel);
+      setValor('sentimentoNivel', r.sentimentoNivel);
+      setValor('acaoNivel', r.acaoNivel);
+      marcarGrupo('cabeca', r.cabeca);
+      marcarGrupo('olhos', r.olhos);
+      marcarGrupo('boca', r.boca);
+      marcarGrupo('barrigaCoracao', r.barrigaCoracao);
+      marcarGrupo('maos', r.maos);
+      marcarGrupo('pensamentos', r.pensamentos);
+      setValor('pensamentoUtil', r.pensamentoUtil);
+      marcarGrupo('emocoes', r.emocoes);
+      setValor('emocaoForte', r.emocaoForte);
+      marcarGrupo('respostaControle', [r.respostaControle]);
+      marcarGrupo('estrategias', r.estrategias);
+      setValor('outraEstrategia', r.outraEstrategia);
+      if (r.cadeia) {
+        setValor('cadeiaSituacao', r.cadeia.situacao);
+        setValor('cadeiaPensamento', r.cadeia.pensamento);
+        setValor('cadeiaEmocao', r.cadeia.emocao);
+        setValor('cadeiaCorpo', r.cadeia.corpo);
+        setValor('cadeiaComportamento', r.cadeia.comportamento);
+        setValor('cadeiaConsequencia', r.cadeia.consequencia);
+      }
+      if (r.novaCadeia) {
+        setValor('novaSituacao', r.novaCadeia.situacao);
+        setValor('novaPensamento', r.novaCadeia.pensamento);
+        setValor('novaEmocao', r.novaCadeia.emocao);
+        setValor('novaCorpo', r.novaCadeia.corpo);
+        setValor('novaAtitude', r.novaCadeia.atitude);
+        setValor('novaConsequencia', r.novaCadeia.consequencia);
+      }
+      dados.pontos = salvo.pontos || 0;
+    }
+
+    function marcarGrupo(grupo, valores = []) {
+      if (!Array.isArray(valores)) valores = [];
+      document.querySelectorAll(`[data-grupo="${grupo}"] .opcao`).forEach(btn => {
+        btn.classList.toggle('selecionada', valores.includes(btn.dataset.valor));
+      });
+    }
+
+    function setValor(id, valor) {
+      const el = document.getElementById(id);
+      if (el && valor !== undefined && valor !== null) el.value = valor;
+    }
+
+    function reiniciarJogo() {
+      if (!confirm('Deseja apagar todas as respostas e iniciar uma nova atividade?')) return;
+      localStorage.removeItem('missaoChefeCelular');
+      location.reload();
+    }
+
+    function salvarArquivoTexto() {
+      coletarDados();
+      const r = dados.respostas;
+      const pistas = [...r.cabeca, ...r.olhos, ...r.boca, ...r.barrigaCoracao, ...r.maos];
+      const estrategias = [...r.estrategias];
+      if (r.outraEstrategia.trim()) estrategias.push(r.outraEstrategia.trim());
+
+      const texto = `MISSÃO: EU SOU O CHEFE DO CELULAR\n\n` +
+        `Nome: ${dados.nome}\n` +
+        `Nível da vontade: ${r.nivel}\n` +
+        `Emoções: ${r.emocoes.join(', ') || 'Não registrado'}\n` +
+        `Pistas do corpo: ${pistas.join(', ') || 'Não registrado'}\n` +
+        `Pensamento mais útil: ${r.pensamentoUtil || r.respostaControle || 'Não registrado'}\n` +
+        `Estratégias: ${estrategias.join(', ') || 'Não registrado'}\n\n` +
+        `CADEIA ATUAL\nSituação: ${r.cadeia.situacao}\nPensamento: ${r.cadeia.pensamento}\nEmoção: ${r.cadeia.emocao}\nCorpo: ${r.cadeia.corpo}\nComportamento: ${r.cadeia.comportamento}\nConsequência: ${r.cadeia.consequencia}\n\n` +
+        `NOVA CADEIA\nSituação: ${r.novaCadeia.situacao}\nPensamento útil: ${r.novaCadeia.pensamento}\nEmoção: ${r.novaCadeia.emocao}\nCorpo: ${r.novaCadeia.corpo}\nNova atitude: ${r.novaCadeia.atitude}\nNova consequência: ${r.novaCadeia.consequencia}\n`;
+
+      const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `missao_chefe_celular_${dados.nome.replace(/\s+/g, '_').toLowerCase()}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function escapar(texto) {
+      return String(texto)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    carregarLocal();
+  </script>
+</body>
+</html>
